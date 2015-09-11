@@ -1,1 +1,5 @@
 src*
+bin*
+test.html
+test.js
+test2.js

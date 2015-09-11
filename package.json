@@ -22,13 +22,17 @@
     ]
   },
   "dependencies": {
-    "react": "^0.13.3",
-    "storablejs": "0.0.6"
+    "lodash": "^3.10.1",
+    "storablejs": "0.0.11"
   },
   "devDependencies": {
     "babel": "^5.8.23",
     "babel-jest": "^5.3.0",
+    "browserify": "^11.0.1",
     "jest-cli": "^0.5.3"
+  },
+  "peerDependencies": {
+    "react": ""
   },
   "repository": {
     "type": "git",
