@@ -26,7 +26,14 @@ const MIXINS = {
             MozTransition: `-moz-transform, ${str}`,
             transition: `transform, ${str}`,
         };
+    },
 
+    borderbox() {
+        return {
+            boxSizing: "border-box",
+            MozBoxSizing: "border-box",
+            WebkitBoxSizing: "border-box",
+        }
     },
 }
 

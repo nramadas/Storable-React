@@ -48,6 +48,14 @@ var MIXINS = {
             MozTransition: "-moz-transform, " + str,
             transition: "transform, " + str
         };
+    },
+
+    borderbox: function borderbox() {
+        return {
+            boxSizing: "border-box",
+            MozBoxSizing: "border-box",
+            WebkitBoxSizing: "border-box"
+        };
     }
 };
 

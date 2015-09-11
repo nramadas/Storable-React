@@ -23,7 +23,7 @@
   },
   "dependencies": {
     "lodash": "^3.10.1",
-    "storablejs": "0.0.11"
+    "storablejs": "0.0.17"
   },
   "devDependencies": {
     "babel": "^5.8.23",

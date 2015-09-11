@@ -22,12 +22,30 @@ var _internalsLoadWebFonts2 = _interopRequireDefault(_internalsLoadWebFonts);
 
 var _internalsStyles = require("./internals/styles");
 
+var _internalsStoreDebuggerHeader = require("./internals/StoreDebuggerHeader");
+
+var _internalsStoreDebuggerHeader2 = _interopRequireDefault(_internalsStoreDebuggerHeader);
+
+var _internalsStoreDebuggerSubHeader = require("./internals/StoreDebuggerSubHeader");
+
+var _internalsStoreDebuggerSubHeader2 = _interopRequireDefault(_internalsStoreDebuggerSubHeader);
+
+var _internalsStoreDebuggerControls = require("./internals/StoreDebuggerControls");
+
+var _internalsStoreDebuggerControls2 = _interopRequireDefault(_internalsStoreDebuggerControls);
+
 var _internalsStoreDebuggerState = require("./internals/StoreDebuggerState");
 
 var _internalsStoreDebuggerState2 = _interopRequireDefault(_internalsStoreDebuggerState);
 
+var _internalsStoreDebuggerPulltag = require("./internals/StoreDebuggerPulltag");
+
+var _internalsStoreDebuggerPulltag2 = _interopRequireDefault(_internalsStoreDebuggerPulltag);
+
 exports["default"] = _react2["default"].createClass({
     displayName: "StoreDebugger",
+
+    className: "StoreDebugger",
 
     componentWillMount: function componentWillMount() {
         (0, _internalsLoadWebFonts2["default"])();
@@ -39,55 +57,42 @@ exports["default"] = _react2["default"].createClass({
         this.props.accountant.stream.forEach(function (_ref) {
             var transactions = _ref.transactions;
             var currentIndex = _ref.currentIndex;
+            var locked = _ref.locked;
 
-            _this.setState(_extends({}, _this.state, { transactions: transactions, currentIndex: currentIndex }));
+            _this.setState(_extends({}, _this.state, {
+                transactions: transactions,
+                currentIndex: currentIndex,
+                backEnabled: currentIndex > 0,
+                pauseEnabled: locked && transactions.length > 0,
+                commitEnabled: !locked && transactions.length > 0,
+                forwardEnabled: currentIndex < transactions.length - 1
+            }));
         });
     },
 
     getInitialState: function getInitialState() {
         var styles = {
-            container: _extends({}, _internalsStyles.MIXINS.absolutePick(0, "100%", 0, 0), _internalsStyles.MIXINS.transition({ right: "0.2s" }), {
+            container: _extends({}, _internalsStyles.MIXINS.absolutePick(0, null, 0, 0), _internalsStyles.MIXINS.transition({ width: "0.2s" }), {
+                width: "0",
+                maxWidth: "400px",
                 position: "fixed",
                 backgroundColor: _internalsStyles.COLORS.darkblue,
                 fontFamily: "'Open Sans'"
             }),
 
-            header: {
-                height: "48px",
-                textAlign: "center",
-                fontSize: "24px",
-                lineHeight: "64px",
-                fontStyle: "italic",
-                color: _internalsStyles.COLORS.cyan,
-                overflow: "hidden"
+            controls: {
+                overflowX: "hidden"
             },
 
-            subheader: {
-                height: "64px",
-                textAlign: "center",
-                fontSize: "32px",
-                lineHeight: "52px",
-                color: _internalsStyles.COLORS.cyan,
-                borderBottom: "1px solid " + _internalsStyles.COLORS.blue,
-                overflow: "hidden"
-            },
-
-            states: {
+            states: _extends({}, _internalsStyles.MIXINS.absolutePick("70px", 0, 0, 0), {
                 overflowX: "hidden",
                 overflowY: "scroll"
-            },
+            }),
 
             tab: _extends({}, _internalsStyles.MIXINS.absolutePick(null, null, "10px", "100%"), {
-                width: "60px",
-                height: "30px",
                 marginLeft: "-1px",
-                border: "1px solid " + _internalsStyles.COLORS.darkblue,
-                color: _internalsStyles.COLORS.darkblue,
-                textAlign: "center",
-                fontSize: "14px",
-                lineHeight: "30px",
-                fontFamily: "'Open Sans'",
-                cursor: "pointer"
+                width: "60px",
+                height: "30px"
             })
         };
 
@@ -100,6 +105,20 @@ exports["default"] = _react2["default"].createClass({
         }));
     },
 
+    handleControlClick: function handleControlClick(buttonTitle) {
+        if (buttonTitle === "PREV") {
+            this.props.accountant.rewind(1);
+        } else if (buttonTitle === "NEXT") {
+            this.props.accountant.fastForward(1);
+        } else if (buttonTitle === "PAUSE") {
+            this.props.accountant.pause();
+        } else if (buttonTitle === "RESUME") {
+            this.props.accountant.resume();
+        } else if (buttonTitle === "COMMIT") {
+            this.props.accountant.commit();
+        }
+    },
+
     render: function render() {
         var _this2 = this;
 
@@ -108,40 +127,41 @@ exports["default"] = _react2["default"].createClass({
         var isOpen = _state.isOpen;
 
         var containerStyle = _extends({}, styles.container, {
-            right: isOpen ? "80%" : "100%"
-        });
-
-        var states = (0, _lodashCollectionMap2["default"])(this.state.transactions, function (transaction, index) {
-            return _react2["default"].createElement(_internalsStoreDebuggerState2["default"], { delta: transaction.delta,
-                isCurrent: index === _this2.state.currentIndex,
-                isValid: index <= _this2.state.currentIndex,
-                index: index,
-                onClick: _this2.props.accountant.goto,
-                key: "debugState" + index });
+            width: isOpen ? "20%" : "0",
+            minWidth: isOpen ? "200px" : null
         });
 
         return _react2["default"].createElement(
             "div",
             { style: containerStyle },
+            _react2["default"].createElement(_internalsStoreDebuggerHeader2["default"], { content: "Storable" }),
             _react2["default"].createElement(
                 "div",
-                { style: styles.header },
-                "Storable"
-            ),
-            _react2["default"].createElement(
-                "div",
-                { style: styles.subheader },
-                "DEV TOOLS"
+                { style: styles.controls },
+                _react2["default"].createElement(_internalsStoreDebuggerControls2["default"], { backEnabled: this.state.backEnabled,
+                    pauseEnabled: this.state.pauseEnabled,
+                    showPaused: this.state.transactions && this.state.transactions.length > 0,
+                    forwardEnabled: this.state.forwardEnabled,
+                    commitEnabled: this.state.commitEnabled,
+                    onClick: this.handleControlClick })
             ),
             _react2["default"].createElement(
                 "div",
                 { style: styles.states },
-                states
+                (0, _lodashCollectionMap2["default"])(this.state.transactions, function (transaction, index) {
+                    return _react2["default"].createElement(_internalsStoreDebuggerState2["default"], { delta: transaction.delta,
+                        isCurrent: index === _this2.state.currentIndex,
+                        isValid: index <= _this2.state.currentIndex,
+                        index: index,
+                        onClick: _this2.props.accountant.goto,
+                        key: "debugState" + index });
+                })
             ),
             _react2["default"].createElement(
                 "div",
-                { style: styles.tab, onClick: this.togglePanel },
-                "Debug"
+                { style: styles.tab },
+                _react2["default"].createElement(_internalsStoreDebuggerPulltag2["default"], { content: "Debug",
+                    onClick: this.togglePanel })
             )
         );
     }

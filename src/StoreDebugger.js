@@ -1,67 +1,61 @@
-import React                from "react";
-import map                  from "lodash/collection/map";
-import loadWebFonts         from "./internals/loadWebFonts";
-import {COLORS, MIXINS}     from "./internals/styles";
-import StoreDebuggerState   from "./internals/StoreDebuggerState"
+import React                    from "react";
+import map                      from "lodash/collection/map";
+import loadWebFonts             from "./internals/loadWebFonts";
+import {COLORS, MIXINS}         from "./internals/styles";
+import StoreDebuggerHeader      from "./internals/StoreDebuggerHeader";
+import StoreDebuggerSubHeader   from "./internals/StoreDebuggerSubHeader";
+import StoreDebuggerControls    from "./internals/StoreDebuggerControls";
+import StoreDebuggerState       from "./internals/StoreDebuggerState";
+import StoreDebuggerPulltag     from "./internals/StoreDebuggerPulltag";
 
 export default React.createClass({
+    className: "StoreDebugger",
+
     componentWillMount() {
         loadWebFonts();
     },
 
     componentDidMount() {
-        this.props.accountant.stream.forEach(({transactions, currentIndex}) => {
-            this.setState({...this.state, transactions, currentIndex});
+        this.props.accountant.stream.forEach(({transactions, currentIndex, locked}) => {
+            this.setState({
+                ...this.state,
+                transactions,
+                currentIndex,
+                backEnabled: currentIndex > 0,
+                pauseEnabled: locked && transactions.length > 0,
+                commitEnabled: !locked && transactions.length > 0,
+                forwardEnabled: currentIndex < transactions.length -1,
+            });
         });
     },
 
     getInitialState() {
         const styles = {
             container: {
-                ...MIXINS.absolutePick(0, "100%", 0, 0),
-                ...MIXINS.transition({right: "0.2s"}),
+                ...MIXINS.absolutePick(0, null, 0, 0),
+                ...MIXINS.transition({width: "0.2s"}),
+                width: "0",
+                maxWidth: "400px",
                 position: "fixed",
                 backgroundColor: COLORS.darkblue,
                 fontFamily: "'Open Sans'",
             },
 
-            header: {
-                height: "48px",
-                textAlign: "center",
-                fontSize: "24px",
-                lineHeight: "64px",
-                fontStyle: "italic",
-                color: COLORS.cyan,
-                overflow: "hidden",
-            },
-
-            subheader: {
-                height: "64px",
-                textAlign: "center",
-                fontSize: "32px",
-                lineHeight: "52px",
-                color: COLORS.cyan,
-                borderBottom: `1px solid ${COLORS.blue}`,
-                overflow: "hidden",
+            controls: {
+                overflowX: "hidden",
             },
 
             states: {
+                ...MIXINS.absolutePick("70px", 0, 0, 0),
                 overflowX: "hidden",
                 overflowY: "scroll",
             },
 
             tab: {
                 ...MIXINS.absolutePick(null, null, "10px", "100%"),
+                marginLeft: "-1px",
                 width: "60px",
                 height: "30px",
-                marginLeft: "-1px",
-                border: `1px solid ${COLORS.darkblue}`,
-                color: COLORS.darkblue,
-                textAlign: "center",
-                fontSize: "14px",
-                lineHeight: "30px",
-                fontFamily: "'Open Sans'",
-                cursor: "pointer",
             },
         };
 
@@ -75,28 +69,53 @@ export default React.createClass({
         })
     },
 
+    handleControlClick(buttonTitle) {
+        if (buttonTitle === "PREV") {
+            this.props.accountant.rewind(1);
+        } else if (buttonTitle === "NEXT") {
+            this.props.accountant.fastForward(1);
+        } else if (buttonTitle === "PAUSE") {
+            this.props.accountant.pause();
+        } else if (buttonTitle === "RESUME") {
+            this.props.accountant.resume();
+        } else if (buttonTitle === "COMMIT") {
+            this.props.accountant.commit();
+        }
+    },
+
     render() {
         const {styles, isOpen} = this.state;
         const containerStyle = {
             ...styles.container,
-            right: isOpen ? "80%" : "100%",
+            width: isOpen ? "20%" : "0",
+            minWidth: isOpen ? "200px" : null,
         }
-
-        const states = map(this.state.transactions, (transaction, index) => {
-            return <StoreDebuggerState delta={transaction.delta}
-                                       isCurrent={index === this.state.currentIndex}
-                                       isValid={index <= this.state.currentIndex}
-                                       index={index}
-                                       onClick={this.props.accountant.goto}
-                                       key={"debugState" + index} />;
-        });
 
         return (
             <div style={containerStyle}>
-                <div style={styles.header}>Storable</div>
-                <div style={styles.subheader}>DEV TOOLS</div>
-                <div style={styles.states}>{states}</div>
-                <div style={styles.tab} onClick={this.togglePanel}>Debug</div>
+                <StoreDebuggerHeader content={"Storable"} />
+                <div style={styles.controls}>
+                    <StoreDebuggerControls backEnabled={this.state.backEnabled}
+                                           pauseEnabled={this.state.pauseEnabled}
+                                           showPaused={this.state.transactions && this.state.transactions.length > 0}
+                                           forwardEnabled={this.state.forwardEnabled}
+                                           commitEnabled={this.state.commitEnabled}
+                                           onClick={this.handleControlClick}/>
+                </div>
+                <div style={styles.states}>{
+                    map(this.state.transactions, (transaction, index) => {
+                        return <StoreDebuggerState delta={transaction.delta}
+                                                   isCurrent={index === this.state.currentIndex}
+                                                   isValid={index <= this.state.currentIndex}
+                                                   index={index}
+                                                   onClick={this.props.accountant.goto}
+                                                   key={"debugState" + index} />;
+                    })
+                }</div>
+                <div style={styles.tab}>
+                    <StoreDebuggerPulltag content={"Debug"}
+                                          onClick={this.togglePanel} />
+                </div>
             </div>
         )
     },
