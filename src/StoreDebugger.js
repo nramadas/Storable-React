@@ -84,7 +84,20 @@ export default React.createClass({
     },
 
     render() {
-        const {styles, isOpen} = this.state;
+        const {
+            styles,
+            isOpen,
+            backEnabled,
+            pauseEnabled,
+            showPaused,
+            forwardEnabled,
+            commitEnabled,
+            transactions,
+            currentIndex,
+        } = this.state;
+
+        console.log("TRANSACTIONS:", transactions);
+
         const containerStyle = {
             ...styles.container,
             width: isOpen ? "20%" : "0",
@@ -95,21 +108,25 @@ export default React.createClass({
             <div style={containerStyle}>
                 <StoreDebuggerHeader content={"Storable"} />
                 <div style={styles.controls}>
-                    <StoreDebuggerControls backEnabled={this.state.backEnabled}
-                                           pauseEnabled={this.state.pauseEnabled}
-                                           showPaused={this.state.transactions && this.state.transactions.length > 0}
-                                           forwardEnabled={this.state.forwardEnabled}
-                                           commitEnabled={this.state.commitEnabled}
-                                           onClick={this.handleControlClick}/>
+                    <StoreDebuggerControls
+                        backEnabled={backEnabled}
+                        pauseEnabled={pauseEnabled}
+                        showPaused={transactions && transactions.length > 0}
+                        forwardEnabled={forwardEnabled}
+                        commitEnabled={commitEnabled}
+                        onClick={this.handleControlClick}
+                    />
                 </div>
                 <div style={styles.states}>{
                     map(this.state.transactions, (transaction, index) => {
-                        return <StoreDebuggerState delta={transaction.delta}
-                                                   isCurrent={index === this.state.currentIndex}
-                                                   isValid={index <= this.state.currentIndex}
-                                                   index={index}
-                                                   onClick={this.props.accountant.goto}
-                                                   key={"debugState" + index} />;
+                        return <StoreDebuggerState
+                            delta={transaction.delta}
+                            isCurrent={index === currentIndex}
+                            isValid={index <= currentIndex}
+                            index={index}
+                            onClick={this.props.accountant.goto}
+                            key={"debugState" + index}
+                        />;
                     })
                 }</div>
                 <div style={styles.tab}>

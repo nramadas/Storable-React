@@ -125,6 +125,15 @@ exports["default"] = _react2["default"].createClass({
         var _state = this.state;
         var styles = _state.styles;
         var isOpen = _state.isOpen;
+        var backEnabled = _state.backEnabled;
+        var pauseEnabled = _state.pauseEnabled;
+        var showPaused = _state.showPaused;
+        var forwardEnabled = _state.forwardEnabled;
+        var commitEnabled = _state.commitEnabled;
+        var transactions = _state.transactions;
+        var currentIndex = _state.currentIndex;
+
+        console.log("TRANSACTIONS:", transactions);
 
         var containerStyle = _extends({}, styles.container, {
             width: isOpen ? "20%" : "0",
@@ -138,11 +147,11 @@ exports["default"] = _react2["default"].createClass({
             _react2["default"].createElement(
                 "div",
                 { style: styles.controls },
-                _react2["default"].createElement(_internalsStoreDebuggerControls2["default"], { backEnabled: this.state.backEnabled,
-                    pauseEnabled: this.state.pauseEnabled,
-                    showPaused: this.state.transactions && this.state.transactions.length > 0,
-                    forwardEnabled: this.state.forwardEnabled,
-                    commitEnabled: this.state.commitEnabled,
+                _react2["default"].createElement(_internalsStoreDebuggerControls2["default"], { backEnabled: backEnabled,
+                    pauseEnabled: pauseEnabled,
+                    showPaused: transactions && transactions.length > 0,
+                    forwardEnabled: forwardEnabled,
+                    commitEnabled: commitEnabled,
                     onClick: this.handleControlClick })
             ),
             _react2["default"].createElement(
@@ -150,8 +159,8 @@ exports["default"] = _react2["default"].createClass({
                 { style: styles.states },
                 (0, _lodashCollectionMap2["default"])(this.state.transactions, function (transaction, index) {
                     return _react2["default"].createElement(_internalsStoreDebuggerState2["default"], { delta: transaction.delta,
-                        isCurrent: index === _this2.state.currentIndex,
-                        isValid: index <= _this2.state.currentIndex,
+                        isCurrent: index === currentIndex,
+                        isValid: index <= currentIndex,
                         index: index,
                         onClick: _this2.props.accountant.goto,
                         key: "debugState" + index });
