@@ -1,36 +1,43 @@
-import React            from "react";
-import {COLORS, MIXINS} from "./styles";
+import React                        from "react";
+import {COLORS, MIXINS}             from "./styles";
+import StoreDebuggerObjectViewer    from "./StoreDebuggerObjectViewer"
+
+const STYLES = {
+    stateTemplate: {
+        position: "relative",
+        padding: "15px",
+        borderBottom: `1px solid ${COLORS.blue}`,
+        cursor: "pointer",
+    },
+
+    stateDesc: {
+        fontSize: "18px",
+        lineHeight: "28px",
+        color: COLORS.white,
+        fontFamily: "'Inconsolata'",
+        overflowX: "hidden",
+        whiteSpace: "nowrap",
+        textOverflow: "ellipsis",
+    },
+
+    stateViewer: {
+        marginTop: "15px",
+        overflow: "hidden",
+    },
+
+    tab: {
+        ...MIXINS.absolutePick(null, 0, 0, null),
+        display: "none",
+        height: "10px",
+        width: "20px",
+        backgroundColor: COLORS.blue,
+    },
+};
+
 
 export default React.createClass({
     getInitialState() {
-        const styles = {
-            stateTemplate: {
-                position: "relative",
-                padding: "15px",
-                borderBottom: `1px solid ${COLORS.blue}`,
-                cursor: "pointer",
-            },
-
-            stateDesc: {
-                fontSize: "18px",
-                lineHeight: "28px",
-                color: COLORS.white,
-                fontFamily: "'Inconsolata'",
-                overflowX: "hidden",
-                whiteSpace: "nowrap",
-                textOverflow: "ellipsis",
-            },
-
-            tab: {
-                ...MIXINS.absolutePick(null, 0, 0, null),
-                display: "none",
-                height: "10px",
-                width: "20px",
-                backgroundColor: COLORS.blue,
-            },
-        };
-
-        return {styles, isHovered: false};
+        return {isHovered: false};
     },
 
     onClick() {
@@ -46,7 +53,6 @@ export default React.createClass({
     },
 
     render() {
-        const {styles} = this.state;
         const msg = JSON.stringify(this.props.delta);
         let containerColor = null;
         let descColor = this.props.isValid ? COLORS.white : COLORS.blue;
@@ -56,9 +62,9 @@ export default React.createClass({
             descColor = this.props.isValid ? COLORS.white : COLORS.sand;
         }
 
-        const containerStyle = {...styles.stateTemplate, backgroundColor: containerColor};
-        const descStyle = {...styles.stateDesc, color: descColor};
-        const tabStyle = {...styles.tab, display: this.props.isCurrent ? "block" : "none"}
+        const containerStyle = {...STYLES.stateTemplate, backgroundColor: containerColor};
+        const descStyle = {...STYLES.stateDesc, color: descColor};
+        const tabStyle = {...STYLES.tab, display: this.props.isCurrent ? "block" : "none"}
 
         return (
             <div style={containerStyle}
@@ -66,6 +72,12 @@ export default React.createClass({
                  onMouseEnter={this.onMouseEnter}
                  onMouseLeave={this.onMouseLeave}>
                 <div style={descStyle}>{msg}</div>
+                {this.props.isValid ?
+                    <div style={STYLES.stateViewer}>
+                        <StoreDebuggerObjectViewer displayName={"state"}
+                                                displayItem={this.props.state}/>
+                    </div> : null
+                }
                 <div style={tabStyle}></div>
             </div>
         );

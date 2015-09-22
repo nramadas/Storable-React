@@ -15,7 +15,10 @@ var COLORS = {
     blue: "#3E606F",
     cyan: "#91AA9D",
     sand: "#D1DBBD",
-    white: "#FCFFF5"
+    maize: "#FFCA00",
+    white: "#FCFFF5",
+    green: "#00E543",
+    orange: "#FF6E00"
 };
 
 var MIXINS = {
@@ -55,6 +58,14 @@ var MIXINS = {
             boxSizing: "border-box",
             MozBoxSizing: "border-box",
             WebkitBoxSizing: "border-box"
+        };
+    },
+
+    userSelect: function userSelect(value) {
+        return {
+            MozUserSelect: value,
+            WebkitUserSelect: value,
+            MsUserSelect: value
         };
     }
 };

@@ -1,26 +1,22 @@
 import React            from "react";
 import {COLORS, MIXINS} from "./styles";
 
-export default React.createClass({
-    getInitialState() {
-        const styles = {
-            header: {
-                height: "48px",
-                textAlign: "center",
-                fontSize: "24px",
-                lineHeight: "48px",
-                fontStyle: "italic",
-                color: COLORS.cyan,
-                overflow: "hidden",
-            },
-        };
-
-        return {styles};
+const STYLES = {
+    header: {
+        height: "48px",
+        textAlign: "center",
+        fontSize: "24px",
+        lineHeight: "48px",
+        fontStyle: "italic",
+        color: COLORS.cyan,
+        overflow: "hidden",
     },
+};
 
+export default React.createClass({
     render() {
         return (
-            <div style={this.state.styles.header}>{this.props.content}</div>
+            <div style={STYLES.header}>{this.props.content}</div>
         )
     },
 });

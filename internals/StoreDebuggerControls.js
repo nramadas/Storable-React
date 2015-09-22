@@ -14,77 +14,67 @@ var _react = require("react");
 
 var _react2 = _interopRequireDefault(_react);
 
-var _lodashCollectionMap = require("lodash/collection/map");
-
-var _lodashCollectionMap2 = _interopRequireDefault(_lodashCollectionMap);
-
 var _styles = require("./styles");
+
+var BUTTON_HEIGHT = "19px";
+var HALF_HEIGHT = "9px";
+
+var STYLES = {
+    button: _extends({}, _styles.MIXINS.userSelect("none"), {
+        display: "inline-block",
+        verticalAlign: "top",
+        height: BUTTON_HEIGHT,
+        width: "25%",
+        cursor: "pointer"
+    }),
+
+    line: {
+        display: "inline-block",
+        verticalAlign: "top",
+        height: HALF_HEIGHT,
+        width: "10%",
+        borderBottom: "1px solid " + _styles.COLORS.cyan
+    },
+
+    buttonTitle: _extends({}, _styles.MIXINS.borderbox(), {
+        display: "inline-block",
+        verticalAlign: "top",
+        height: BUTTON_HEIGHT,
+        lineHeight: "17px",
+        fontSize: "12px",
+        width: "80%",
+        color: _styles.COLORS.cyan,
+        textAlign: "center",
+        border: "1px solid " + _styles.COLORS.cyan,
+        overflow: "hidden",
+        whiteSpace: "nowrap",
+        textOverflow: "ellipsis"
+    })
+};
 
 exports["default"] = _react2["default"].createClass({
     displayName: "StoreDebuggerControls",
 
-    getInitialState: function getInitialState() {
-        var buttonHeight = "19px";
-        var halfHeight = "9px";
-
-        var styles = {
-            button: {
-                display: "inline-block",
-                verticalAlign: "top",
-                height: buttonHeight,
-                width: "25%",
-                cursor: "pointer"
-            },
-
-            line: {
-                display: "inline-block",
-                verticalAlign: "top",
-                height: halfHeight,
-                width: "10%",
-                borderBottom: "1px solid " + _styles.COLORS.cyan
-            },
-
-            buttonTitle: _extends({}, _styles.MIXINS.borderbox(), {
-                display: "inline-block",
-                verticalAlign: "top",
-                height: buttonHeight,
-                lineHeight: "17px",
-                fontSize: "12px",
-                width: "80%",
-                color: _styles.COLORS.cyan,
-                textAlign: "center",
-                border: "1px solid " + _styles.COLORS.cyan,
-                overflow: "hidden",
-                whiteSpace: "nowrap",
-                textOverflow: "ellipsis"
-            })
-        };
-
-        return { styles: styles };
-    },
-
     renderButton: function renderButton(buttonTitle, enabled) {
         var _this = this;
 
-        var styles = this.state.styles;
-
-        var buttonTitleStyle = _extends({}, styles.buttonTitle, {
+        var buttonTitleStyle = _extends({}, STYLES.buttonTitle, {
             color: enabled ? _styles.COLORS.cyan : _styles.COLORS.blue,
             borderColor: enabled ? _styles.COLORS.cyan : _styles.COLORS.blue
         });
 
         return _react2["default"].createElement(
             "div",
-            { style: styles.button, onClick: function () {
+            { style: STYLES.button, onClick: function () {
                     return enabled && _this.props.onClick(buttonTitle);
                 } },
-            _react2["default"].createElement("div", { style: styles.line }),
+            _react2["default"].createElement("div", { style: STYLES.line }),
             _react2["default"].createElement(
                 "div",
                 { style: buttonTitleStyle },
                 buttonTitle
             ),
-            _react2["default"].createElement("div", { style: styles.line })
+            _react2["default"].createElement("div", { style: STYLES.line })
         );
     },
 
@@ -96,7 +86,7 @@ exports["default"] = _react2["default"].createClass({
         return _react2["default"].createElement(
             "div",
             null,
-            (0, _lodashCollectionMap2["default"])(buttons, function (_ref) {
+            buttons.map(function (_ref) {
                 var _ref2 = _slicedToArray(_ref, 2);
 
                 var buttonTitle = _ref2[0];

@@ -14,37 +14,46 @@ var _react2 = _interopRequireDefault(_react);
 
 var _styles = require("./styles");
 
+var _StoreDebuggerObjectViewer = require("./StoreDebuggerObjectViewer");
+
+var _StoreDebuggerObjectViewer2 = _interopRequireDefault(_StoreDebuggerObjectViewer);
+
+var STYLES = {
+    stateTemplate: {
+        position: "relative",
+        padding: "15px",
+        borderBottom: "1px solid " + _styles.COLORS.blue,
+        cursor: "pointer"
+    },
+
+    stateDesc: {
+        fontSize: "18px",
+        lineHeight: "28px",
+        color: _styles.COLORS.white,
+        fontFamily: "'Inconsolata'",
+        overflowX: "hidden",
+        whiteSpace: "nowrap",
+        textOverflow: "ellipsis"
+    },
+
+    stateViewer: {
+        marginTop: "15px",
+        overflow: "hidden"
+    },
+
+    tab: _extends({}, _styles.MIXINS.absolutePick(null, 0, 0, null), {
+        display: "none",
+        height: "10px",
+        width: "20px",
+        backgroundColor: _styles.COLORS.blue
+    })
+};
+
 exports["default"] = _react2["default"].createClass({
     displayName: "StoreDebuggerState",
 
     getInitialState: function getInitialState() {
-        var styles = {
-            stateTemplate: {
-                position: "relative",
-                padding: "15px",
-                borderBottom: "1px solid " + _styles.COLORS.blue,
-                cursor: "pointer"
-            },
-
-            stateDesc: {
-                fontSize: "18px",
-                lineHeight: "28px",
-                color: _styles.COLORS.white,
-                fontFamily: "'Inconsolata'",
-                overflowX: "hidden",
-                whiteSpace: "nowrap",
-                textOverflow: "ellipsis"
-            },
-
-            tab: _extends({}, _styles.MIXINS.absolutePick(null, 0, 0, null), {
-                display: "none",
-                height: "10px",
-                width: "20px",
-                backgroundColor: _styles.COLORS.blue
-            })
-        };
-
-        return { styles: styles, isHovered: false };
+        return { isHovered: false };
     },
 
     onClick: function onClick() {
@@ -60,8 +69,6 @@ exports["default"] = _react2["default"].createClass({
     },
 
     render: function render() {
-        var styles = this.state.styles;
-
         var msg = JSON.stringify(this.props.delta);
         var containerColor = null;
         var descColor = this.props.isValid ? _styles.COLORS.white : _styles.COLORS.blue;
@@ -71,9 +78,9 @@ exports["default"] = _react2["default"].createClass({
             descColor = this.props.isValid ? _styles.COLORS.white : _styles.COLORS.sand;
         }
 
-        var containerStyle = _extends({}, styles.stateTemplate, { backgroundColor: containerColor });
-        var descStyle = _extends({}, styles.stateDesc, { color: descColor });
-        var tabStyle = _extends({}, styles.tab, { display: this.props.isCurrent ? "block" : "none" });
+        var containerStyle = _extends({}, STYLES.stateTemplate, { backgroundColor: containerColor });
+        var descStyle = _extends({}, STYLES.stateDesc, { color: descColor });
+        var tabStyle = _extends({}, STYLES.tab, { display: this.props.isCurrent ? "block" : "none" });
 
         return _react2["default"].createElement(
             "div",
@@ -86,6 +93,12 @@ exports["default"] = _react2["default"].createClass({
                 { style: descStyle },
                 msg
             ),
+            this.props.isValid ? _react2["default"].createElement(
+                "div",
+                { style: STYLES.stateViewer },
+                _react2["default"].createElement(_StoreDebuggerObjectViewer2["default"], { displayName: "state",
+                    displayItem: this.props.state })
+            ) : null,
             _react2["default"].createElement("div", { style: tabStyle })
         );
     }
