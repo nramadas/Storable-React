@@ -66,8 +66,6 @@ var STYLES = {
 exports["default"] = _react2["default"].createClass({
     displayName: "StoreDebugger",
 
-    className: "StoreDebugger",
-
     componentWillMount: function componentWillMount() {
         (0, _internalsLoadWebFonts2["default"])();
     },

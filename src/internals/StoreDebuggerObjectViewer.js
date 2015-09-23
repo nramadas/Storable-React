@@ -85,6 +85,7 @@ const StoreDebugggerObjectViewer = React.createClass({
 
     render() {
         const {displayItem, displayName} = this.props;
+        const displayTypeStyle = {...STYLES.displayType};
         let children = null;
         let opener = null;
         let closer = null;
@@ -100,26 +101,31 @@ const StoreDebugggerObjectViewer = React.createClass({
             displayType = "Array";
             showArrow = true;
             children = displayItem.map((value, index) => {
-                return (<div style={STYLES.arrayItem}>
+                return (<div style={STYLES.arrayItem} key={displayName+value+index}>
                     <span style={STYLES.arrayItemIndex}>{index + ":"}</span>
                     <span style={STYLES.arrayItemValue}>{value}</span>
                 </div>);
             });
         } else if (isFunction(displayItem)) {
             displayType = String(displayItem);
+            displayTypeStyle.color = COLORS.sand;
         } else if (isObject(displayItem)) {
             opener = "{";
             closer = "}";
             keyCount = Object.keys(displayItem).length;
             displayType = displayItem.constructor.name;
             showArrow = true;
-            children = Object.keys(displayItem).map((key) => {
-                return <StoreDebugggerObjectViewer displayName={key} displayItem={displayItem[key]} />
+            children = Object.keys(displayItem).map((key, index) => {
+                return <StoreDebugggerObjectViewer displayName={key}
+                                                   displayItem={displayItem[key]}
+                                                   key={displayName+key+index} />
             });
         } else if (isString(displayItem)) {
             displayType = `\"${displayItem}\"`;
+            displayTypeStyle.color = COLORS.sand;
         } else {
             displayType = String(displayItem);
+            displayTypeStyle.color = COLORS.sand;
         }
 
         return (
@@ -130,7 +136,7 @@ const StoreDebugggerObjectViewer = React.createClass({
                         String.fromCharCode(9658)}</div> :
                     <div style={STYLES.arrow}></div>}
                 <div style={STYLES.displayName}>{displayName + ":"}</div>
-                <div style={STYLES.displayType}>{displayType}</div>
+                <div style={displayTypeStyle}>{displayType}</div>
                 {!this.state.isOpen && opener ? <div style={STYLES.opener}>{opener}</div> : null}
                 {showArrow ?
                     this.state.isOpen ?

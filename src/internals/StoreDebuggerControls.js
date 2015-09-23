@@ -48,7 +48,9 @@ export default React.createClass({
         };
 
         return (
-            <div style={STYLES.button} onClick={() => enabled && this.props.onClick(buttonTitle)}>
+            <div style={STYLES.button}
+                 onClick={() => enabled && this.props.onClick(buttonTitle)}
+                 key={buttonTitle}>
                 <div style={STYLES.line}></div>
                 <div style={buttonTitleStyle}>{buttonTitle}</div>
                 <div style={STYLES.line}></div>

@@ -109,6 +109,7 @@ var StoreDebugggerObjectViewer = _react2["default"].createClass({
         var displayItem = _props.displayItem;
         var displayName = _props.displayName;
 
+        var displayTypeStyle = _extends({}, STYLES.displayType);
         var children = null;
         var opener = null;
         var closer = null;
@@ -126,7 +127,7 @@ var StoreDebugggerObjectViewer = _react2["default"].createClass({
             children = displayItem.map(function (value, index) {
                 return _react2["default"].createElement(
                     "div",
-                    { style: STYLES.arrayItem },
+                    { style: STYLES.arrayItem, key: displayName + value + index },
                     _react2["default"].createElement(
                         "span",
                         { style: STYLES.arrayItemIndex },
@@ -141,19 +142,24 @@ var StoreDebugggerObjectViewer = _react2["default"].createClass({
             });
         } else if ((0, _lodashLangIsFunction2["default"])(displayItem)) {
             displayType = String(displayItem);
+            displayTypeStyle.color = _styles.COLORS.sand;
         } else if ((0, _lodashLangIsObject2["default"])(displayItem)) {
             opener = "{";
             closer = "}";
             keyCount = Object.keys(displayItem).length;
             displayType = displayItem.constructor.name;
             showArrow = true;
-            children = Object.keys(displayItem).map(function (key) {
-                return _react2["default"].createElement(StoreDebugggerObjectViewer, { displayName: key, displayItem: displayItem[key] });
+            children = Object.keys(displayItem).map(function (key, index) {
+                return _react2["default"].createElement(StoreDebugggerObjectViewer, { displayName: key,
+                    displayItem: displayItem[key],
+                    key: displayName + key + index });
             });
         } else if ((0, _lodashLangIsString2["default"])(displayItem)) {
             displayType = "\"" + displayItem + "\"";
+            displayTypeStyle.color = _styles.COLORS.sand;
         } else {
             displayType = String(displayItem);
+            displayTypeStyle.color = _styles.COLORS.sand;
         }
 
         return _react2["default"].createElement(
@@ -171,7 +177,7 @@ var StoreDebugggerObjectViewer = _react2["default"].createClass({
             ),
             _react2["default"].createElement(
                 "div",
-                { style: STYLES.displayType },
+                { style: displayTypeStyle },
                 displayType
             ),
             !this.state.isOpen && opener ? _react2["default"].createElement(

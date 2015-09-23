@@ -65,9 +65,11 @@ exports["default"] = _react2["default"].createClass({
 
         return _react2["default"].createElement(
             "div",
-            { style: STYLES.button, onClick: function () {
+            { style: STYLES.button,
+                onClick: function () {
                     return enabled && _this.props.onClick(buttonTitle);
-                } },
+                },
+                key: buttonTitle },
             _react2["default"].createElement("div", { style: STYLES.line }),
             _react2["default"].createElement(
                 "div",

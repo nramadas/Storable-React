@@ -37,8 +37,6 @@ const STYLES = {
 };
 
 export default React.createClass({
-    className: "StoreDebugger",
-
     componentWillMount() {
         loadWebFonts();
     },
